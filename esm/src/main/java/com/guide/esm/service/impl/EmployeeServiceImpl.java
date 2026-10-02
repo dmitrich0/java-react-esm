@@ -8,16 +8,19 @@ import com.guide.esm.repository.EmployeeRepository;
 import com.guide.esm.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
     @Override
+    @Transactional
     public EmployeeDto create(EmployeeDto dto) {
         Employee employee = EmployeeMapper.mapToEmployee(dto);
 
@@ -44,6 +47,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee) {
         Employee employee = this.employeeRepository.findById(employeeId)
                 .orElseThrow(() ->
@@ -60,6 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public EmployeeDto deleteEmployee(Long employeeId) {
         Employee employee = this.employeeRepository.findById(employeeId)
                 .orElseThrow(() ->
