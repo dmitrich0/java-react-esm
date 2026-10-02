@@ -1,9 +1,12 @@
 HELP.md
 .env
+.env.*
+!.env.example
+!.env.docker.example
+.vercel/
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
-!**/src/test/**/target/
 
 ### STS ###
 .apt_generated

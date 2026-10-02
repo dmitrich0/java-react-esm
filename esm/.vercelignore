@@ -1,0 +1,13 @@
+.env
+.env.*
+*.pem
+*.key
+*.crt
+target
+build
+.idea
+.vscode
+src/test
+*.log
+*.dump
+.DS_Store

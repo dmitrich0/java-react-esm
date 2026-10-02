@@ -11,7 +11,15 @@ Supabase используется как обычный хостинг PostgreSQ
 Подключение к Supabase, запуск, миграции и перенос на другой хостинг описаны в
 [гайде по БД](docs/database.md).
 
-Тесты: `./mvnw test` (нужен работающий Docker; PostgreSQL создаётся автоматически
-в отдельном контейнере). Тесты не используют `.env` и облачную БД.
+Docker, локальный запуск, публикация на Vercel и запуск на VM описаны в
+[гайде по развертыванию](docs/deployment.md).
+
+Быстрый запуск: создай `.env.docker` по `.env.docker.example`, заполни параметры
+своего Supabase и выполни `docker compose up --build -d --wait`.
+Compose запускает только backend; БД подключается по сети.
+Проверка: `curl http://localhost:8080/actuator/health`.
+
+Сборка без Docker: `./mvnw clean package` → `target/esm.jar`.
+Тесты и их зависимости удалены.
 
 Исходный курс: https://www.youtube.com/watch?v=sAVki6-iRQs&list=PLGRDMO4rOGcODJeYSY08lIILkqoydQI2k&index=1

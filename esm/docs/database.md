@@ -137,20 +137,18 @@ RLS включён; владелец таблиц (при таком запус�
 Перед публичным размещением backend нужно отдельно настроить авторизацию API:
 RLS не защищает HTTP-контроллер, работающий от имени владельца таблиц.
 
-## Локальный PostgreSQL
+## Backend в Docker
 
-В `.env` задай URL `jdbc:postgresql://localhost:5432/esm`, пользователя `postgres`
-и свой локальный пароль. Затем:
+Compose запускает только Spring backend. PostgreSQL в Compose отсутствует:
+подключение идёт к Supabase или другой внешней БД.
+Создай `.env.docker` по `.env.docker.example` и укажи параметры подключения.
+Этот файл использует raw-формат Docker: пароль вставляется буквально,
+без кавычек, `export` и экранирования обратных слешей.
+Не копируй в него экранированный пароль из Java properties без преобразования.
 
-```bash
-docker compose up -d --wait
-./mvnw spring-boot:run
-```
-
-Compose нужен только для локальной БД. Для Supabase он не нужен.
-Данные остаются в именованном Docker volume после `docker compose down`.
-Изменение `DB_PASSWORD` не меняет пароль уже инициализированного volume:
-пароль существующей БД меняется SQL-командой `ALTER ROLE`.
+Запуск и подробная инструкция Vercel: [гайд по развертыванию](deployment.md).
+Для запуска приложения из IntelliJ по-прежнему используются `.env`
+в формате Java properties или реальные переменные окружения.
 
 ## Как изменять структуру БД
 
@@ -218,9 +216,8 @@ pooler. Восстанавливай в пустую целевую БД до п
 
 ## Проверки и типичные ошибки
 
-`./mvnw test` запускает настоящий PostgreSQL 17 в Testcontainers и проверяет
-создание схемы, CRUD, уникальность email, RLS и повторное применение миграций.
-Нужен работающий Docker; облачные секреты тестам не нужны.
+Автоматические тесты удалены. Сборка: `./mvnw clean package`.
+После запуска вручную проверь `/actuator/health` и `/api/employees`.
 
 - **Unknown host / network unreachable**: проверь адрес; при отсутствии IPv6
   перейди с Direct на Session pooler.
@@ -229,4 +226,4 @@ pooler. Восстанавливай в пустую целевую БД до п
 - **Tenant or user not found**: скопируй pooler host и `postgres.PROJECT_REF` из Connect.
 - **Permission denied**: проверь владельца схемы/таблиц, GRANT и RLS для выбранной роли.
 - **Flyway checksum mismatch**: верни применённый файл и внеси изменение новой миграцией.
-- **Could not find a valid Docker environment** в тестах: запусти или восстанови Docker Desktop.
+- **Cannot connect to the Docker daemon**: запусти Docker Desktop перед сборкой контейнера.
