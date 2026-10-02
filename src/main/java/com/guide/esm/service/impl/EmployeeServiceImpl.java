@@ -9,6 +9,8 @@ import com.guide.esm.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
@@ -32,5 +34,12 @@ public class EmployeeServiceImpl implements EmployeeService {
                 );
 
         return EmployeeMapper.mapToEmployeeDto(employee);
+    }
+
+    @Override
+    public List<EmployeeDto> getAllEmployees() {
+        List<Employee> employees = this.employeeRepository.findAll();
+
+        return employees.stream().map((EmployeeMapper::mapToEmployeeDto)).toList();
     }
 }
