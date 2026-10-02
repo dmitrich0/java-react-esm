@@ -1,10 +1,11 @@
+import ListEmployeesComponent from './components/EmployeeListComponent'
 import './App.css'
 
 function App() {
   return (
-    <>
-    <h1 className="text-center">Hello, world!</h1>
-    </>
+    <main>
+      <ListEmployeesComponent />
+    </main>
   )
 }
 
