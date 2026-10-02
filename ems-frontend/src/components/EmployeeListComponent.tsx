@@ -1,28 +1,40 @@
-export interface Employee {
-  id: number
-  firstName: string
-  lastName: string
-  email: string
-}
+import { useEffect, useState } from 'react'
+import { listEmployees } from '../services/EmployeeService'
+import type { Employee } from '../services/EmployeeService'
 
-interface ListEmployeesComponentProps {
-  employees?: readonly Employee[]
-}
+const ListEmployeesComponent = () => {
+  const [employees, setEmployees] = useState<Employee[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-// Temporary sample data until the backend is connected.
-const sampleEmployees: readonly Employee[] = [
-  { id: 1, firstName: 'Ramesh', lastName: 'Fadatare', email: 'ramesh@gmail.com' },
-  { id: 2, firstName: 'Umesh', lastName: 'Fadatare', email: 'umesh@gmail.com' },
-  { id: 3, firstName: 'Rajkumar', lastName: 'Fadatare', email: 'rajkumar@gmail.com' },
-]
+  useEffect(() => {
+    const controller = new AbortController()
 
-const ListEmployeesComponent = ({
-  employees = sampleEmployees,
-}: ListEmployeesComponentProps) => {
+    listEmployees(controller.signal)
+      .then((response) => {
+        if (!controller.signal.aborted) {
+          setEmployees(response.data)
+        }
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setError('Unable to load employees. Please try again later.')
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          setLoading(false)
+        }
+      })
+
+    return () => controller.abort()
+  }, [])
+
   return (
     <section className="employee-list" aria-labelledby="employees-heading">
       <h1 id="employees-heading" className="text-center">List of Employees</h1>
-      <div className="table-responsive">
+      {error ? <p className="alert alert-danger" role="alert">{error}</p> : null}
+      <div className="table-responsive" aria-busy={loading}>
         <table className="table table-striped table-bordered employee-table" aria-labelledby="employees-heading">
           <thead>
             <tr>
@@ -33,7 +45,11 @@ const ListEmployeesComponent = ({
             </tr>
           </thead>
           <tbody>
-            {employees.length === 0 ? (
+            {loading ? (
+              <tr>
+                <td colSpan={4} className="text-center" role="status">Loading employees...</td>
+              </tr>
+            ) : error ? null : employees.length === 0 ? (
               <tr>
                 <td colSpan={4} className="text-center">No employees found.</td>
               </tr>
