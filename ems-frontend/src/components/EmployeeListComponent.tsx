@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { listEmployees } from '../services/EmployeeService'
 import type { Employee } from '../services/EmployeeService'
 
@@ -33,6 +34,7 @@ const ListEmployeesComponent = () => {
   return (
     <section className="employee-list" aria-labelledby="employees-heading">
       <h1 id="employees-heading" className="text-center">List of Employees</h1>
+      <Link to="/employees/add" className="btn btn-primary mb-3">Add Employee</Link>
       {error ? <p className="alert alert-danger" role="alert">{error}</p> : null}
       <div className="table-responsive" aria-busy={loading}>
         <table className="table table-striped table-bordered employee-table" aria-labelledby="employees-heading">
@@ -42,16 +44,17 @@ const ListEmployeesComponent = () => {
               <th scope="col">Employee First Name</th>
               <th scope="col">Employee Last Name</th>
               <th scope="col">Employee Email Id</th>
+              <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={4} className="text-center" role="status">Loading employees...</td>
+                <td colSpan={5} className="text-center" role="status">Loading employees...</td>
               </tr>
             ) : error ? null : employees.length === 0 ? (
               <tr>
-                <td colSpan={4} className="text-center">No employees found.</td>
+                <td colSpan={5} className="text-center">No employees found.</td>
               </tr>
             ) : (
               employees.map((employee) => (
@@ -60,6 +63,10 @@ const ListEmployeesComponent = () => {
                   <td>{employee.firstName}</td>
                   <td>{employee.lastName}</td>
                   <td>{employee.email}</td>
+                  <td>
+                    <Link to={`/employees/edit/${employee.id}`} className="btn btn-info"
+                      aria-label={`Edit ${employee.firstName} ${employee.lastName}`}>Edit</Link>
+                  </td>
                 </tr>
               ))
             )}
