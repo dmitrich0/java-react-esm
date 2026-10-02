@@ -10,4 +10,6 @@ public interface EmployeeService {
     EmployeeDto getById(Long id);
 
     List<EmployeeDto> getAllEmployees();
+
+    EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee);
 }
