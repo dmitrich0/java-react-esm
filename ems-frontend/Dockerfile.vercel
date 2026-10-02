@@ -1,0 +1,20 @@
+FROM node:24-alpine AS build
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM nginx:stable-alpine
+ENV PORT=80
+# Preserve Nginx variables such as $uri when substituting the template.
+ENV NGINX_ENVSUBST_FILTER="^(BACKEND_API_URL|PORT)$"
+
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY docker/default.conf.template /etc/nginx/templates/default.conf.template
+COPY docker/15-check-env.sh /docker-entrypoint.d/15-check-env.sh
+RUN chmod +x /docker-entrypoint.d/15-check-env.sh
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
