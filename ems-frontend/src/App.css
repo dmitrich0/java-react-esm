@@ -1,3 +1,19 @@
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.app-footer {
+  padding: 16px;
+}
+
 .employee-list {
   padding: 24px clamp(16px, 1.5vw, 32px);
   color: #111;
