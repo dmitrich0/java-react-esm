@@ -22,3 +22,6 @@ export const createEmployee = (employee: EmployeeInput) =>
 
 export const updateEmployee = (id: string, employee: EmployeeInput) =>
   axios.put<Employee>(`${REST_API_BASE_URL}/${encodeURIComponent(id)}`, employee)
+
+export const deleteEmployee = (id: number) =>
+  axios.delete<void>(`${REST_API_BASE_URL}/${encodeURIComponent(id)}`)
